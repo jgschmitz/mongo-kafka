@@ -1,0 +1,6 @@
+{"_id": {"_data": "<resumeToken>"}, 
+ "operationType": "insert",
+ "ns": {"db": "test", "coll": "sink"},
+ "documentKey": {"_id": {"$oid": "5cc99f4893283d634cb3f59e"}},
+ "clusterTime": {"$timestamp": {"t": 1556717385, "i": 1}},
+ "fullDocument": {"_id": {"$oid": "5cc99f4893283d634cb3f59e"}, "i": "0"}}
