@@ -1,6 +1,6 @@
 # MongoDB Kafka Connector
 
-The official MongoDB Kafka Connector.
+The Super official MongoDB Kafka Connector.
 
 
 ## Documentation
