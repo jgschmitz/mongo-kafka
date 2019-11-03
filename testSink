@@ -1,4 +1,4 @@
-#mongoDB sink test token **
+#mongoDB sink test token ****
 {"_id": {"_data": "<resumeToken>"}, 
  "operationType": "insert",
  "ns": {"db": "test", "coll": "sink"},
