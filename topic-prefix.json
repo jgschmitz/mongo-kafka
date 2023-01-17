@@ -1,0 +1,3 @@
+topic.prefix=myPrefix
+database=test
+collection=data
