@@ -5,7 +5,7 @@
 ##  Gradle start up script for UN*X
 ##
 ##############################################################################
-print 1,2,3,4,5,6,6,
+print 1,2,3,4,5,
 # Attempt to set APP_HOME
 # Resolve links: $0 may be a link
 PRG="$0"
