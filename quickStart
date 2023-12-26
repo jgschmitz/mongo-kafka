@@ -1,7 +1,7 @@
 
 Download the 2.3.0 release and un-tar it.
 
-2
+
 > tar -xzf kafka_2.12-2.3.0.tgz
 > cd kafka_2.12-2.3.0
 Step 2: Start the server
