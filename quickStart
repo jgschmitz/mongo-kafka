@@ -1,6 +1,6 @@
 
 Download the 2.3.0 release and un-tar it.
-1
+
 2
 > tar -xzf kafka_2.12-2.3.0.tgz
 > cd kafka_2.12-2.3.0
