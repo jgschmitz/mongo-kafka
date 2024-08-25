@@ -1,9 +1,51 @@
-#mongoDB sink test token 
-{"_id": {"_data": "<resumeToken>"}, 
+from pymongo import MongoClient
+from pymongo.errors import PyMongoError
+import logging
 
- "operationType": "insert",
- "ns": {"db": "test", "coll": "sink"},
- "documentKey": {"_id": {"$oid": "5cc99f4893283d634cb3f59e"}},
- "clusterTime": {"$timestamp": {"t": 1556717385, "i": 1}},
- "fullDocument": {"_id": {"$oid": "5cc99f4893283d634cb3f59e"}, "i": "0"}}
-"success"
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+
+# MongoDB connection
+client = MongoClient("mongodb://localhost:27017/")
+db = client['test']
+collection = db['sink']
+
+# Function to process the change stream event
+def process_change_event(change_event):
+    try:
+        # Extract resume token
+        resume_token = change_event['_id']['_data']
+
+        # Extract relevant data from the event
+        operation_type = change_event['operationType']
+        ns = change_event['ns']
+        document_key = change_event['documentKey']
+        full_document = change_event.get('fullDocument', {})
+
+        # Log the received event for debugging purposes
+        logging.info(f"Received change event: {change_event}")
+
+        # Process the event (this is just a placeholder for actual processing logic)
+        if operation_type == "insert":
+            logging.info(f"Inserting document: {full_document}")
+            # Example: Save or process the document as needed
+
+        # Store or log the resume token for future use
+        logging.info(f"Storing resume token: {resume_token}")
+        # Here you could store the resume token in a database or file for resumption
+        
+    except KeyError as e:
+        logging.error(f"Missing expected key: {e}")
+    except PyMongoError as e:
+        logging.error(f"MongoDB error: {e}")
+    except Exception as e:
+        logging.error(f"An error occurred: {e}")
+
+# Example: Using a change stream to listen for changes in the collection
+try:
+    with collection.watch() as change_stream:
+        for change in change_stream:
+            process_change_event(change)
+
+except PyMongoError as e:
+    logging.error(f"MongoDB change stream error: {e}")
