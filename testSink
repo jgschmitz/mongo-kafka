@@ -1,52 +1,74 @@
-#test sync
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 import logging
 
 # Setup logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# MongoDB configuration
+MONGO_URI = "mongodb://localhost:27017/"
+DB_NAME = "test"
+COLLECTION_NAME = "sink"
 
 # MongoDB connection
-client = MongoClient("mongodb://localhost:27017/")
-db = client['test']
-collection = db['sink']
+client = MongoClient(MONGO_URI)
+db = client[DB_NAME]
+collection = db[COLLECTION_NAME]
 
 # Function to process the change stream event
 def process_change_event(change_event):
     try:
-        # Extract resume token
-        resume_token = change_event['_id']['_data']
+        # Log the received event
+        logging.info(f"Processing change event: {change_event}")
 
-        # Extract relevant data from the event
-        operation_type = change_event['operationType']
-        ns = change_event['ns']
-        document_key = change_event['documentKey']
-        full_document = change_event.get('fullDocument', {})
+        # Extract relevant data
+        operation_type = change_event.get("operationType")
+        full_document = change_event.get("fullDocument", {})
+        resume_token = change_event["_id"]["_data"]
 
-        # Log the received event for debugging purposes
-        logging.info(f"Received change event: {change_event}")
-
-        # Process the event (this is just a placeholder for actual processing logic)
+        # Handle specific operations
         if operation_type == "insert":
-            logging.info(f"Inserting document: {full_document}")
-            # Example: Save or process the document as needed
+            handle_insert(full_document)
+        elif operation_type == "update":
+            handle_update(change_event)
+        elif operation_type == "delete":
+            handle_delete(change_event)
 
-        # Store or log the resume token for future use
-        logging.info(f"Storing resume token: {resume_token}")
-        # Here you could store the resume token in a database or file for resumption
-        
+        # Store or log the resume token
+        logging.info(f"Resume token: {resume_token}")
+
     except KeyError as e:
-        logging.error(f"Missing expected key: {e}")
+        logging.error(f"Key error in event: {e}")
     except PyMongoError as e:
         logging.error(f"MongoDB error: {e}")
     except Exception as e:
-        logging.error(f"An error occurred: {e}")
+        logging.error(f"Unexpected error: {e}")
 
-# Example: Using a change stream to listen for changes in the collection
-try:
-    with collection.watch() as change_stream:
-        for change in change_stream:
-            process_change_event(change)
+# Handlers for different operation types
+def handle_insert(document):
+    logging.info(f"Insert operation: {document}")
+    # Add processing logic for inserts
 
-except PyMongoError as e:
-    logging.error(f"MongoDB change stream error: {e}")
+def handle_update(change_event):
+    logging.info(f"Update operation: {change_event}")
+    # Add processing logic for updates
+
+def handle_delete(change_event):
+    logging.info(f"Delete operation: {change_event}")
+    # Add processing logic for deletes
+
+# Main function to watch the collection
+def watch_collection():
+    try:
+        with collection.watch() as change_stream:
+            logging.info(f"Watching collection: {COLLECTION_NAME}")
+            for change in change_stream:
+                process_change_event(change)
+    except PyMongoError as e:
+        logging.error(f"Error with MongoDB change stream: {e}")
+    except Exception as e:
+        logging.error(f"Unexpected error: {e}")
+
+# Entry point
+if __name__ == "__main__":
+    watch_collection()
