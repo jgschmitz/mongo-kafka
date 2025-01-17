@@ -73,3 +73,6 @@ def watch_collection():
 # Entry point
 if __name__ == "__main__":
     watch_collection()
+
+# docs are here -> https://www.mongodb.com/docs/kafka-connector/current/source-connector/
+
